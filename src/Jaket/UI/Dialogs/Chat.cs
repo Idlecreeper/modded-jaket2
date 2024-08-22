@@ -1,17 +1,18 @@
 namespace Jaket.UI.Dialogs;
-using System;
+
 using Steamworks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Threading;
+
 using Jaket.Assets;
 using Jaket.Commands;
 using Jaket.Net;
 using Jaket.Net.Types;
 using Jaket.Sam;
 using Jaket.World;
+
 using static Pal;
 using static Rect;
 
@@ -24,9 +25,9 @@ public class Chat : CanvasSingleton<Chat>
     public const string TTS_PREFIX = "[#FF7F50][14]\\[TTS][][]";
 
     /// <summary> Maximum length of chat message. </summary>
-    public const int MAX_MESSAGE_LENGTH = 512;
+    public const int MAX_MESSAGE_LENGTH = 128;
     /// <summary> How many messages at a time will be shown. </summary>
-    public const int MESSAGES_SHOWN = 20;
+    public const int MESSAGES_SHOWN = 14;
     /// <summary> Chat width in pixels. </summary>
     public const float WIDTH = 640f;
 
@@ -44,12 +45,12 @@ public class Chat : CanvasSingleton<Chat>
     public bool AutoTTS;
     /// <summary> Background of the auto TTS sign. </summary>
     private RectTransform ttsBg;
-    // public static bool crashing = false;
+
     /// <summary> Input field in which the message will be entered directly. </summary>
     public InputField Field;
     /// <summary> Arrival time of the last message, used to change the chat transparency. </summary>
     private float lastMessageTime;
-    public static bool Spamming = false;
+
     /// <summary> Messages sent by the player. </summary>
     private List<string> messages = new();
     /// <summary> Index of the current message in the list. </summary>
@@ -75,20 +76,12 @@ public class Chat : CanvasSingleton<Chat>
 
         // start the update cycle of typing players
         InvokeRepeating("UpdateTyping", 0f, .5f);
-
     }
 
     private void Update()
     {
         listBg.alpha = Mathf.Lerp(listBg.alpha, Shown || Time.time - lastMessageTime < 5f ? 1f : 0f, Time.deltaTime * 5f);
         ttsBg.gameObject.SetActive(AutoTTS && Shown);
-        if (Spamming == true)
-        {
-            System.Random rnd = new System.Random();
-            var color = String.Format("#{0:X6}", rnd.Next(0x1000000));
-            LobbyList ls = new LobbyList();
-            LobbyController.Lobby?.SendChatString("[10000][" + color + "]" + "████████████████████████████████████████████████████████████████████████████████████████████████████");
-        }
     }
 
     private void UpdateTyping()
@@ -149,7 +142,7 @@ public class Chat : CanvasSingleton<Chat>
         {
             if (!Commands.Handler.Handle(msg))
             {
-                string msgTag = "[#840D98]\[Hacker UwU][#FFFFFF] " + msg;
+                string msgTag = "[#840D98]\\[Hacker UwU][#FFFFFF] " + msg;
                 LobbyController.Lobby?.SendChatString(AutoTTS ? "/tts " + msgTag : msgTag);
             }
 
@@ -260,17 +253,12 @@ public class Chat : CanvasSingleton<Chat>
         Msg("Hello, it's me, the main developer of Jaket.");
         Msg("I just wanted to give you some tips:");
 
-        Tip($"Hold [#FFA500]{Settings.EmojiWheel}[] to open the emote wheel");
+        Tip($"Hold [#FFA500]{Settings.EmoteWheel}[] to open the emote wheel");
         Tip("Try typing [#FFA500]/help[] in the chat");
         Tip("Take a look at the bestiary, there's a [#FF66CC]surprise[] :3");
         Tip("If you have an issue, tell us in our [#5865F2]Discord[] server");
 
         Msg("Cheers~ ♡");
-
-        Tip("[#00FF00]Oh and also, dont be too much of an asshole. As my father once said \"Mischief is allowed, just dont get into trouble.\" - [#FF0000]dev of disabled cheats bypass");
-        Tip("run [yellow]/help[], we added extra commands");
-        Tip(" ### NOTICE ### \nIf you haven't yet, please join the jaket modders discord, https://discord.gg/VuTVNqxznK");
-        Tip("[yellow]NOTE: modded teams (purple, cyan, and white) all show up as white team for unmodded players.[]");
     }
 
     #endregion
