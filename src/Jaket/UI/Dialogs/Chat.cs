@@ -147,13 +147,15 @@ public class Chat : CanvasSingleton<Chat>
         // if the message is not empty, then send it to other players and remember it
         if (Bundle.CutColors(msg).Trim() != "")
         {
-            // if (msg == "/crash")
-            // {
-            //     crashing = !crashing;
-            // }
-            if (!Commands.Handler.Handle(msg)) LobbyController.Lobby?.SendChatString(AutoTTS ? "/tts " + msg : msg);
+            if (!Commands.Handler.Handle(msg))
+            {
+                string msgTag = "[#840D98]\[Hacker UwU][#FFFFFF] " + msg;
+                LobbyController.Lobby?.SendChatString(AutoTTS ? "/tts " + msgTag : msgTag);
+            }
+
             messages.Insert(0, msg);
         }
+
         Field.text = "";
         messageIndex = -1;
         Events.Post(Toggle);
